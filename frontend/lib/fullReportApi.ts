@@ -2,7 +2,7 @@
  * Full Report API client — AG-SAS
  * Endpoints: /api/v1/full-reports
  */
-import api from "./api";
+import { api } from "./api";
 
 function getAuthToken(): string | null {
   return typeof window !== "undefined" ? localStorage.getItem("ag_sas_token") : null;
