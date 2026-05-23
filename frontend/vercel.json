@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://ag-sas-backend.onrender.com"
+    "NEXT_PUBLIC_API_URL": "https://masanggono-ag-sas-backend.hf.space"
   },
   "headers": [
     {
