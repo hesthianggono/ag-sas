@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }} — AG-SAS</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Arial", "Helvetica Neue", sans-serif; font-size: 9.5pt; color: #1e293b; background: #fff; line-height: 1.5; }
+@page { size: A4; margin: 2cm 2cm 2.2cm 2.5cm; }
+@media print {
+  .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  body { font-size: 9pt; }
+}
+
+/* ── Typography ───────────────────────────────────────── */
+h1 { font-size: 18pt; font-weight: 700; color: #fff; }
+h2 { font-size: 11pt; font-weight: 700; color: #1e3a5f; margin: 0; }
+h3 { font-size: 9.5pt; font-weight: 700; color: #1e3a5f; margin-bottom: 6px; }
+
+/* ── Color Variables ──────────────────────────────────── */
+:root {
+  --navy: #1e3a5f;
+  --blue: #2563eb;
+  --light: #f1f5f9;
+  --mid: #94a3b8;
+  --green: #16a34a;
+  --red: #dc2626;
+  --orange: #ea580c;
+  --border: #cbd5e1;
+}
+
+/* ── Cover Page ───────────────────────────────────────── */
+.cover { background: var(--navy); color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding: 0; }
+.cover-header { background: rgba(255,255,255,0.08); padding: 24px 40px 20px; border-bottom: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; gap: 16px; }
+.cover-logo-box { width: 44px; height: 44px; background: #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cover-logo-box svg { width: 26px; height: 26px; fill: none; stroke: white; stroke-width: 2; }
+.cover-app-name { font-size: 14pt; font-weight: 700; color: #fff; line-height: 1.1; }
+.cover-app-sub  { font-size: 8.5pt; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; }
+.cover-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px 40px 40px; }
+.cover-calc-type { font-size: 9pt; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+.cover-title { font-size: 22pt; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 28px; }
+.cover-divider { width: 60px; height: 3px; background: #ea580c; margin-bottom: 28px; }
+.cover-proj-label { font-size: 8pt; color: rgba(255,255,255,0.45); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.cover-proj-value { font-size: 11.5pt; color: #fff; margin-bottom: 18px; line-height: 1.3; }
+.cover-footer { padding: 24px 40px; border-top: 1px solid rgba(255,255,255,0.12); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.cover-meta-item label { font-size: 7.5pt; color: rgba(255,255,255,0.45); display: block; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 3px; }
+.cover-meta-item span { font-size: 9pt; color: rgba(255,255,255,0.9); font-weight: 600; }
+
+/* ── Layout ───────────────────────────────────────────── */
+.content { max-width: 100%; padding: 0; }
+
+/* ── Section ──────────────────────────────────────────── */
+.section { margin-bottom: 24px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--navy); }
+.section-num { background: var(--navy); color: #fff; font-size: 8pt; font-weight: 700; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+
+/* ── Tables ───────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 10px; }
+th { background: var(--navy); color: #fff; padding: 6px 8px; text-align: left; font-size: 8.5pt; font-weight: 600; }
+td { padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: var(--light); }
+tr:last-child td { border-bottom: none; }
+.td-label { font-weight: 600; color: #334155; width: 38%; }
+.td-formula { font-family: "Courier New", monospace; font-size: 8pt; color: var(--navy); background: var(--light); padding: 2px 6px; border-radius: 2px; }
+.td-value { font-weight: 600; color: #0f172a; }
+.td-unit { color: var(--mid); font-size: 8.5pt; white-space: nowrap; }
+.col-param { width: 36%; }
+.col-symbol { width: 14%; font-family: "Courier New", monospace; color: var(--navy); }
+.col-formula { width: 26%; }
+.col-value { width: 12%; text-align: right; font-weight: 600; }
+.col-unit { width: 12%; color: var(--mid); }
+.tbl-header-blue th { background: var(--blue); }
+.tbl-header-steel th { background: #475569; }
+.highlight-row td { background: #eff6ff !important; font-weight: 600; }
+.highlight-green td { background: #f0fdf4 !important; }
+.highlight-red td { background: #fef2f2 !important; }
+
+/* ── Formula Box ──────────────────────────────────────── */
+.formula-box { background: var(--light); border-left: 3px solid var(--navy); padding: 8px 12px; margin: 8px 0; font-family: "Courier New", monospace; font-size: 9pt; color: var(--navy); line-height: 1.7; }
+.formula-box .fml-ref { font-family: Arial, sans-serif; font-size: 7.5pt; color: var(--mid); float: right; margin-top: 2px; }
+.formula-step { display: flex; justify-content: space-between; align-items: baseline; }
+.formula-step .step-lhs { color: #334155; }
+.formula-step .step-rhs { font-weight: 700; color: var(--navy); }
+
+/* ── Status Banner ────────────────────────────────────── */
+.status-banner { padding: 16px 20px; border-radius: 6px; display: flex; align-items: center; gap: 14px; margin: 12px 0; }
+.status-banner.aman  { background: #f0fdf4; border: 2px solid #16a34a; }
+.status-banner.tidak { background: #fef2f2; border: 2px solid #dc2626; }
+.status-icon { font-size: 22pt; line-height: 1; }
+.status-text h3 { font-size: 13pt; margin-bottom: 2px; }
+.status-text h3.aman  { color: var(--green); }
+.status-text h3.tidak { color: var(--red); }
+.status-text p { font-size: 9pt; color: #475569; margin: 0; }
+.ratio-badge { margin-left: auto; text-align: center; padding: 6px 14px; border-radius: 4px; }
+.ratio-badge.aman  { background: #16a34a; color: #fff; }
+.ratio-badge.tidak { background: #dc2626; color: #fff; }
+.ratio-badge .ratio-val { font-size: 14pt; font-weight: 700; display: block; }
+.ratio-badge .ratio-lbl { font-size: 7pt; opacity: 0.85; }
+
+/* ── Compact Badge ────────────────────────────────────── */
+.compact-badge   { background: #16a34a; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 8pt; font-weight: 600; }
+.noncompact-badge { background: #d97706; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 8pt; font-weight: 600; }
+
+/* ── Summary Table ────────────────────────────────────── */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.summary-card { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.summary-card-header { background: var(--navy); color: #fff; padding: 6px 10px; font-size: 8.5pt; font-weight: 600; }
+.summary-card table { margin-bottom: 0; }
+
+/* ── Disclaimer & Signature ───────────────────────────── */
+.disclaimer-box { background: #fff7ed; border: 1px solid #fdba74; border-radius: 4px; padding: 10px 14px; margin: 12px 0; }
+.disclaimer-box p { font-size: 8.5pt; color: #9a3412; line-height: 1.6; }
+.disclaimer-box strong { color: #7c2d12; }
+.signature-table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+.signature-table th { background: var(--light); color: var(--navy); padding: 7px 12px; font-size: 8.5pt; border: 1px solid var(--border); text-align: center; }
+.signature-table td { padding: 6px 12px; border: 1px solid var(--border); font-size: 8.5pt; text-align: center; }
+.signature-cell { height: 64px; vertical-align: bottom; padding-bottom: 8px; color: var(--mid); font-size: 7.5pt; }
+
+/* ── Page Header/Footer ───────────────────────────────── */
+.page-header { background: var(--navy); color: #fff; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 8pt; }
+.page-footer  { background: var(--light); color: var(--mid); padding: 7px 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 24px; font-size: 7.5pt; border-top: 1px solid var(--border); font-style: italic; }
+
+/* ── Print toolbar (no-print) ─────────────────────────── */
+.print-toolbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #0f172a; color: #fff; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; font-size: 9pt; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.btn-print { background: #ea580c; color: #fff; border: none; padding: 7px 18px; border-radius: 4px; font-size: 9pt; font-weight: 600; cursor: pointer; }
+.btn-print:hover { background: #c2410c; }
+.print-spacer { height: 46px; }
+@media print { .print-toolbar, .print-spacer { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ── Print Toolbar (screen only) ─────────────────────────────────────────── -->
+<div class="print-toolbar no-print">
+  <span>📄 Preview Laporan — {{ title }}</span>
+  <button class="btn-print" onclick="window.print()">🖨 Cetak / Simpan PDF</button>
+</div>
+<div class="print-spacer no-print"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- 1. HALAMAN SAMPUL                                                          -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-header">
+    <div class="cover-logo-box">
+      <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10v11M20 10v11M8 10v11M16 10v11M12 10v11"/></svg>
+    </div>
+    <div>
+      <div class="cover-app-name">AG Structural Analysis Suite</div>
+      <div class="cover-app-sub">AG-SAS &nbsp;·&nbsp; Formula v{{ formula_version }}</div>
+    </div>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-calc-type">
+      {% if calc_type == "concrete_beam" %}Desain Lentur Balok Beton Bertulang — SNI 2847:2019
+      {% else %}Desain Lentur Balok Baja WF — SNI 1729:2020{% endif %}
+    </div>
+    <div class="cover-title">{{ title }}</div>
+    <div class="cover-divider"></div>
+
+    <div class="cover-proj-label">Nama Proyek</div>
+    <div class="cover-proj-value">{{ project.name }}</div>
+    <div class="cover-proj-label">Lokasi</div>
+    <div class="cover-proj-value">{{ project.location }}</div>
+    <div class="cover-proj-label">Pemberi Tugas</div>
+    <div class="cover-proj-value">{{ project.client_name }}</div>
+    {% if project.consultant_name %}
+    <div class="cover-proj-label">Konsultan</div>
+    <div class="cover-proj-value">{{ project.consultant_name }}</div>
+    {% endif %}
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-meta-item">
+      <label>Tanggal Cetak</label>
+      <span>{{ generated_at }}</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Dibuat Oleh</label>
+      <span>{{ generated_by }}</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Versi Engine</label>
+      <span>{{ formula_version }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Page break before main content -->
+<div style="page-break-before: always;"></div>
+
+<!-- ── Running Header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+  <strong>AG Structural Analysis Suite</strong>
+  <span>{{ title }} &nbsp;·&nbsp; {{ project.name }}</span>
+  <span>Dicetak: {{ generated_at }}</span>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: IDENTITAS PROYEK                                               -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">1</span>
+    <h2>IDENTITAS PROYEK</h2>
+  </div>
+  <table>
+    <colgroup><col class="td-label" style="width:36%"><col></colgroup>
+    <tbody>
+      <tr><td class="td-label">Nama Proyek</td><td class="td-value">{{ project.name }}</td></tr>
+      <tr><td class="td-label">Lokasi</td><td>{{ project.location }}</td></tr>
+      <tr><td class="td-label">Pemberi Tugas (Pemilik)</td><td>{{ project.client_name }}</td></tr>
+      <tr><td class="td-label">Konsultan Perencana</td><td>{{ project.consultant_name or "—" }}</td></tr>
+      <tr><td class="td-label">Jenis Bangunan</td><td>{{ project.building_type }}</td></tr>
+      <tr><td class="td-label">Jumlah Lantai</td><td>{{ project.num_floors }}</td></tr>
+      <tr><td class="td-label">Sistem Struktur</td><td>{{ project.structural_system }}</td></tr>
+      <tr><td class="td-label">Material Utama</td><td>{{ project.primary_material }}</td></tr>
+      <tr><td class="td-label">Perhitungan</td><td>{{ title }}</td></tr>
+      <tr><td class="td-label">Tanggal Generate</td><td>{{ generated_at }}</td></tr>
+      <tr><td class="td-label">Dibuat Oleh</td><td>{{ generated_by }}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: STANDAR DAN PERATURAN DESAIN                                   -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">2</span>
+    <h2>STANDAR DAN PERATURAN DESAIN</h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:20%">Kode Standar</th><th>Judul / Lingkup Penggunaan</th></tr></thead>
+    <tbody>
+      {% for std in standards %}
+      <tr><td class="td-value" style="font-family:monospace;font-size:8.5pt;">{{ std.code }}</td><td>{{ std.scope }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: DATA MATERIAL                                                  -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">3</span>
+    <h2>DATA MATERIAL</h2>
+  </div>
+  {% if calc_type == "concrete_beam" %}
+  <table class="tbl-header-blue">
+    <thead><tr><th class="col-param">Parameter</th><th class="col-symbol">Simbol</th><th class="col-value">Nilai</th><th class="col-unit">Satuan</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Kuat tekan beton</td><td class="td-formula">fc'</td>
+        <td class="td-value text-right">{{ material.fc_prime_mpa }}</td><td class="td-unit">MPa</td>
+        <td>Min. 17 MPa (SNI 2847:2019)</td>
+      </tr>
+      <tr>
+        <td>Kuat leleh tulangan</td><td class="td-formula">fy</td>
+        <td class="td-value text-right">{{ material.fy_mpa }}</td><td class="td-unit">MPa</td>
+        <td>Maks. 550 MPa (SNI 2847:2019)</td>
+      </tr>
+      <tr>
+        <td>Modulus elastisitas beton</td><td class="td-formula">Ec</td>
+        <td class="td-value text-right">{{ material.ec_mpa | round(0) | int }}</td><td class="td-unit">MPa</td>
+        <td>Ec = 4700√fc' (SNI 2847:2019 Ps. 19.2.2)</td>
+      </tr>
+      <tr>
+        <td>Modulus elastisitas baja</td><td class="td-formula">Es</td>
+        <td class="td-value text-right">200,000</td><td class="td-unit">MPa</td>
+        <td>Nilai standar SNI 2847:2019</td>
+      </tr>
+    </tbody>
+  </table>
+  {% else %}
+  <table class="tbl-header-steel">
+    <thead><tr><th class="col-param">Parameter</th><th class="col-symbol">Simbol</th><th class="col-value">Nilai</th><th class="col-unit">Satuan</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Kuat leleh baja</td><td class="td-formula">Fy</td>
+        <td class="td-value">{{ material.fy_mpa }}</td><td class="td-unit">MPa</td>
+        <td>Baja BJ 37 / BJ 41 / BJ 50</td>
+      </tr>
+      <tr>
+        <td>Modulus elastisitas baja</td><td class="td-formula">E</td>
+        <td class="td-value">200,000</td><td class="td-unit">MPa</td>
+        <td>SNI 1729:2020 Pasal A3.2</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: DATA GEOMETRI ELEMEN                                           -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">4</span>
+    <h2>DATA GEOMETRI ELEMEN</h2>
+  </div>
+  {% if calc_type == "concrete_beam" %}
+  <table class="tbl-header-blue">
+    <thead><tr><th class="col-param">Dimensi</th><th class="col-symbol">Simbol</th><th class="col-value">Nilai</th><th class="col-unit">Satuan</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr><td>Lebar penampang</td><td class="td-formula">b</td><td class="td-value">{{ geometry.width_b_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Tinggi total penampang</td><td class="td-formula">h</td><td class="td-value">{{ geometry.height_h_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Selimut beton bersih</td><td class="td-formula">cc</td><td class="td-value">{{ geometry.cover_cc_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Diameter sengkang</td><td class="td-formula">Øs</td><td class="td-value">{{ geometry.stirrup_diameter_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Diameter tulangan utama</td><td class="td-formula">Ø</td><td class="td-value">{{ geometry.bar_diameter_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr class="highlight-row">
+        <td><strong>Tinggi efektif</strong></td><td class="td-formula">d</td>
+        <td class="td-value">{{ geometry.effective_depth_d_mm }}</td><td class="td-unit">mm</td>
+        <td>d = h − cc − Øs − Ø/2</td>
+      </tr>
+      <tr><td>Panjang bentang</td><td class="td-formula">L</td><td class="td-value">{{ geometry.span_l_m }}</td><td class="td-unit">m</td><td>Bentang bersih (simply supported)</td></tr>
+    </tbody>
+  </table>
+  {% else %}
+  <h3>Profil Baja yang Digunakan</h3>
+  <table class="tbl-header-steel">
+    <thead><tr><th class="col-param">Properti Profil</th><th class="col-symbol">Simbol</th><th class="col-value">Nilai</th><th class="col-unit">Satuan</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td><strong>Designasi Profil</strong></td><td>—</td><td colspan="2" class="td-value">{{ geometry.profile_designation }}</td><td>—</td></tr>
+      <tr><td>Tinggi profil</td><td class="td-formula">H</td><td class="td-value">{{ geometry.height_h_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Lebar sayap</td><td class="td-formula">B</td><td class="td-value">{{ geometry.flange_width_b_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Tebal badan</td><td class="td-formula">tw</td><td class="td-value">{{ geometry.web_thickness_tw_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Tebal sayap</td><td class="td-formula">tf</td><td class="td-value">{{ geometry.flange_thickness_tf_mm }}</td><td class="td-unit">mm</td><td>—</td></tr>
+      <tr><td>Modulus penampang elastis</td><td class="td-formula">Sx</td><td class="td-value">{{ geometry.sx_cm3 }}</td><td class="td-unit">cm³</td><td>—</td></tr>
+      <tr><td>Modulus penampang plastis</td><td class="td-formula">Zx</td><td class="td-value">{{ geometry.zx_cm3 }}</td><td class="td-unit">cm³</td><td>—</td></tr>
+      <tr><td>Berat sendiri profil</td><td class="td-formula">W</td><td class="td-value">{{ geometry.weight_per_m_kgm }}</td><td class="td-unit">kg/m</td><td>—</td></tr>
+      <tr><td>Panjang bentang</td><td class="td-formula">L</td><td class="td-value">{{ geometry.span_l_m }}</td><td class="td-unit">m</td><td>Bentang bersih (simply supported)</td></tr>
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: DATA PEMBEBANAN                                                -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">5</span>
+    <h2>DATA PEMBEBANAN</h2>
+  </div>
+  <table>
+    <thead><tr><th class="col-param">Jenis Beban</th><th class="col-symbol">Simbol</th><th class="col-value">Nilai</th><th class="col-unit">Satuan</th><th>Keterangan</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Beban mati merata</td><td class="td-formula">wD</td>
+        <td class="td-value">{{ loading.dead_load_w_knm }}</td><td class="td-unit">kN/m</td>
+        <td>Beban mati eksternal (tidak termasuk SW)</td>
+      </tr>
+      {% if calc_type == "steel_beam" %}
+      <tr>
+        <td>Berat sendiri profil</td><td class="td-formula">SW</td>
+        <td class="td-value">{{ loading.self_weight_knm }}</td><td class="td-unit">kN/m</td>
+        <td>SW = W × 9.81 / 1000</td>
+      </tr>
+      <tr>
+        <td>Beban mati total</td><td class="td-formula">wD,tot</td>
+        <td class="td-value">{{ loading.dead_total_knm }}</td><td class="td-unit">kN/m</td>
+        <td>wD + SW</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>Beban hidup merata</td><td class="td-formula">wL</td>
+        <td class="td-value">{{ loading.live_load_w_knm }}</td><td class="td-unit">kN/m</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Panjang bentang</td><td class="td-formula">L</td>
+        <td class="td-value">{{ loading.span_l_m }}</td><td class="td-unit">m</td>
+        <td>Bentang balok (simply supported)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: KOMBINASI PEMBEBANAN                                           -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">6</span>
+    <h2>KOMBINASI PEMBEBANAN</h2>
+  </div>
+  <p style="font-size:8.5pt;color:#475569;margin-bottom:8px;">Referensi: SNI 1727:2020 Pasal 5.3.1c — Kombinasi beban LRFD dasar (gravitasi)</p>
+  {% if calc_type == "concrete_beam" %}
+  <div class="formula-box">
+    <span class="fml-ref">SNI 1727:2020 §5.3.1c</span>
+    U = 1.2D + 1.6L<br>
+    wu = 1.2 × wD + 1.6 × wL<br>
+    wu = 1.2 × {{ loading.dead_load_w_knm }} + 1.6 × {{ loading.live_load_w_knm }}<br>
+    <div class="formula-step">
+      <span class="step-lhs">wu =</span>
+      <span class="step-rhs">{{ combination.wu_knm }} kN/m</span>
+    </div>
+  </div>
+  {% else %}
+  <div class="formula-box">
+    <span class="fml-ref">SNI 1727:2020 §5.3.1c</span>
+    U = 1.2(D + SW) + 1.6L<br>
+    wu = 1.2 × (wD + SW) + 1.6 × wL<br>
+    wu = 1.2 × ({{ loading.dead_load_w_knm }} + {{ loading.self_weight_knm }}) + 1.6 × {{ loading.live_load_w_knm }}<br>
+    wu = 1.2 × {{ loading.dead_total_knm }} + 1.6 × {{ loading.live_load_w_knm }}<br>
+    <div class="formula-step">
+      <span class="step-lhs">wu =</span>
+      <span class="step-rhs">{{ combination.wu_knm }} kN/m</span>
+    </div>
+  </div>
+  {% endif %}
+  <table>
+    <thead><tr><th>Parameter</th><th>Nilai</th><th>Satuan</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td><strong>wu (beban terfaktor)</strong></td><td class="td-value">{{ combination.wu_knm }}</td><td class="td-unit">kN/m</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 7: PERHITUNGAN GAYA DALAM SEDERHANA                               -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">7</span>
+    <h2>PERHITUNGAN GAYA DALAM SEDERHANA</h2>
+  </div>
+  <p style="font-size:8.5pt;color:#475569;margin-bottom:8px;">Balok sederhana (simply supported) dengan beban merata seragam.</p>
+  <div class="formula-box">
+    Momen ultimit:&nbsp; Mu = wu × L² / 8<br>
+    Mu = {{ combination.wu_knm }} × {{ loading.span_l_m }}² / 8
+    <div class="formula-step">
+      <span class="step-lhs">Mu =</span>
+      <span class="step-rhs">{{ forces.mu_ultimate_knm }} kN·m</span>
+    </div>
+    {% if calc_type == "concrete_beam" %}
+    <br>
+    Geser ultimit:&nbsp; Vu = wu × L / 2<br>
+    Vu = {{ combination.wu_knm }} × {{ loading.span_l_m }} / 2
+    <div class="formula-step">
+      <span class="step-lhs">Vu =</span>
+      <span class="step-rhs">{{ forces.vu_ultimate_kn }} kN</span>
+    </div>
+    {% endif %}
+  </div>
+  <table>
+    <thead><tr><th class="col-param">Gaya Dalam</th><th>Simbol</th><th>Nilai</th><th>Satuan</th><th>Rumus</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td><strong>Momen terfaktor</strong></td><td class="td-formula">Mu</td><td class="td-value">{{ forces.mu_ultimate_knm }}</td><td class="td-unit">kN·m</td><td>wu·L²/8</td></tr>
+      {% if calc_type == "concrete_beam" %}
+      <tr><td>Geser terfaktor</td><td class="td-formula">Vu</td><td class="td-value">{{ forces.vu_ultimate_kn }}</td><td class="td-unit">kN</td><td>wu·L/2</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 8: PERHITUNGAN KAPASITAS ELEMEN                                   -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">8</span>
+    <h2>PERHITUNGAN KAPASITAS ELEMEN</h2>
+  </div>
+
+  {% if calc_type == "concrete_beam" %}
+  <!-- Concrete: β1, ρ, As, a, Mn -->
+  <h3>8.1 Faktor β₁ (Blok Tegangan Ekivalen)</h3>
+  <div class="formula-box">
+    fc' = {{ material.fc_prime_mpa }} MPa
+    {% if material.fc_prime_mpa <= 28 %}
+    → β₁ = 0.85 &nbsp;(fc' ≤ 28 MPa)
+    {% elif material.fc_prime_mpa >= 56 %}
+    → β₁ = 0.65 &nbsp;(fc' ≥ 56 MPa, nilai minimum)
+    {% else %}
+    → β₁ = 0.85 − 0.05×({{ material.fc_prime_mpa }}−28)/7 = {{ capacity.beta1 }}
+    {% endif %}
+  </div>
+
+  <h3 style="margin-top:12px">8.2 Rasio Tulangan</h3>
+  <div class="formula-box">
+    ρ_min = max(0.25×√fc'/fy , 1.4/fy)
+          = max(0.25×√{{ material.fc_prime_mpa }}/{{ material.fy_mpa }} , 1.4/{{ material.fy_mpa }})
+    <div class="formula-step"><span class="step-lhs">ρ_min =</span><span class="step-rhs">{{ capacity.rho_min | fmt4 }}</span></div>
+    <br>
+    ρ_balanced = (0.85×β₁×fc'/fy)×(600/(600+fy))
+    ρ_max = 0.75 × ρ_balanced
+    <div class="formula-step"><span class="step-lhs">ρ_max =</span><span class="step-rhs">{{ capacity.rho_max | fmt4 }}</span></div>
+    <br>
+    Rn = Mu/(φ×b×d²) = {{ forces.mu_ultimate_knm }}×10⁶ / ({{ capacity.phi_factor }}×{{ geometry.width_b_mm }}×{{ geometry.effective_depth_d_mm }}²)
+    ρ_req = (0.85×fc'/fy)×(1−√(1−2Rn/(0.85×fc')))
+    <div class="formula-step"><span class="step-lhs">ρ_req =</span><span class="step-rhs">{{ capacity.rho_required | fmt4 }}</span></div>
+  </div>
+
+  <h3 style="margin-top:12px">8.3 Luas Tulangan</h3>
+  <div class="formula-box">
+    As_req = ρ_req × b × d = {{ capacity.rho_required | fmt4 }} × {{ geometry.width_b_mm }} × {{ geometry.effective_depth_d_mm }}
+    <div class="formula-step"><span class="step-lhs">As_req =</span><span class="step-rhs">{{ capacity.as_required_mm2 | round(1) }} mm²</span></div>
+    As_min = ρ_min × b × d
+    <div class="formula-step"><span class="step-lhs">As_min =</span><span class="step-rhs">{{ capacity.as_min_mm2 | round(1) }} mm²</span></div>
+    As_design = max(As_req, As_min) → dibulatkan ke jumlah batang utuh
+    Luas 1 batang Ø{{ geometry.bar_diameter_mm }} = π×Ø²/4 = {{ capacity.bar_area_mm2 | round(1) }} mm²
+    n = ⌈As_design / bar_area⌉ = {{ capacity.num_bars }} batang
+    <div class="formula-step"><span class="step-lhs">As_design =</span><span class="step-rhs">{{ capacity.as_design_mm2 | round(1) }} mm² ({{ capacity.num_bars }} × Ø{{ geometry.bar_diameter_mm }})</span></div>
+  </div>
+
+  <h3 style="margin-top:12px">8.4 Tinggi Blok Tekan dan Kapasitas Momen</h3>
+  <div class="formula-box">
+    a = As×fy / (0.85×fc'×b)
+    a = {{ capacity.as_design_mm2 | round(1) }}×{{ material.fy_mpa }} / (0.85×{{ material.fc_prime_mpa }}×{{ geometry.width_b_mm }})
+    <div class="formula-step"><span class="step-lhs">a =</span><span class="step-rhs">{{ capacity.a_block_mm | round(2) }} mm</span></div>
+    <br>
+    Mn = As×fy×(d − a/2)
+    Mn = {{ capacity.as_design_mm2|round(1) }}×{{ material.fy_mpa }}×({{ geometry.effective_depth_d_mm }}−{{ capacity.a_block_mm|round(2) }}/2) / 10⁶
+    <div class="formula-step"><span class="step-lhs">Mn =</span><span class="step-rhs">{{ capacity.mn_knm | round(2) }} kN·m</span></div>
+    <br>
+    φMn = φ × Mn = {{ capacity.phi_factor }} × {{ capacity.mn_knm | round(2) }}
+    <div class="formula-step"><span class="step-lhs">φMn =</span><span class="step-rhs">{{ capacity.phi_mn_knm | round(2) }} kN·m</span></div>
+  </div>
+
+  {% else %}
+  <!-- Steel: compactness, Mp, Mn, φMn -->
+  <h3>8.1 Cek Kelangsingan Sayap</h3>
+  <div class="formula-box">
+    <span class="fml-ref">SNI 1729:2020 Tabel B4.1b</span>
+    λ_f = (B/2) / tf = ({{ geometry.flange_width_b_mm }}/2) / {{ geometry.flange_thickness_tf_mm }}
+    <div class="formula-step"><span class="step-lhs">λ_f =</span><span class="step-rhs">{{ capacity.lambda_f | round(3) }}</span></div>
+    <br>
+    λ_pf = 0.38 × √(E/Fy) = 0.38 × √(200000/{{ material.fy_mpa }})
+    <div class="formula-step"><span class="step-lhs">λ_pf =</span><span class="step-rhs">{{ capacity.lambda_pf | round(3) }}</span></div>
+    <br>
+    λ_rf = 1.0 × √(E/Fy)
+    <div class="formula-step"><span class="step-lhs">λ_rf =</span><span class="step-rhs">{{ capacity.lambda_rf | round(3) }}</span></div>
+    <br>
+    λ_f {{ "&le;" if capacity.is_compact else "&gt;" }} λ_pf → Penampang <strong>{{ "KOMPAK" if capacity.is_compact else "TIDAK KOMPAK" }}</strong>
+  </div>
+
+  <h3 style="margin-top:12px">8.2 Momen Plastis dan Kapasitas</h3>
+  <div class="formula-box">
+    <span class="fml-ref">SNI 1729:2020 F2-1 / F3-1</span>
+    Mp = Fy × Zx = {{ material.fy_mpa }} × {{ geometry.zx_cm3 }} cm³ × 1000 / 10⁶
+    <div class="formula-step"><span class="step-lhs">Mp =</span><span class="step-rhs">{{ capacity.mp_knm | round(2) }} kN·m</span></div>
+    <br>
+    {% if capacity.is_compact %}
+    Mn = Mp &nbsp;(kompak, Lb ≤ Lp diasumsikan)
+    {% else %}
+    Mn = Mp − (Mp − 0.7FySx)×(λ_f−λ_pf)/(λ_rf−λ_pf) &nbsp;(tidak kompak)
+    {% endif %}
+    <div class="formula-step"><span class="step-lhs">Mn =</span><span class="step-rhs">{{ capacity.mn_knm | round(2) }} kN·m</span></div>
+    <br>
+    φMn = φ × Mn = {{ capacity.phi_factor }} × {{ capacity.mn_knm | round(2) }}
+    <div class="formula-step"><span class="step-lhs">φMn =</span><span class="step-rhs">{{ capacity.phi_mn_knm | round(2) }} kN·m</span></div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 9: TABEL RINGKASAN HASIL                                          -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">9</span>
+    <h2>TABEL RINGKASAN HASIL</h2>
+  </div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-card-header">Beban &amp; Gaya Dalam</div>
+      <table>
+        <tbody>
+          {% for row in summary.loads %}
+          <tr {% if row.highlight %}class="highlight-row"{% endif %}>
+            <td class="td-label">{{ row.label }}</td>
+            <td class="td-value">{{ row.value }}</td>
+            <td class="td-unit">{{ row.unit }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-header">Kapasitas Elemen</div>
+      <table>
+        <tbody>
+          {% for row in summary.capacity %}
+          <tr {% if row.highlight %}class="highlight-row"{% endif %}>
+            <td class="td-label">{{ row.label }}</td>
+            <td class="td-value">{{ row.value }}</td>
+            <td class="td-unit">{{ row.unit }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th colspan="4">Cek Kapasitas Akhir</th></tr></thead>
+    <tbody>
+      <tr><td class="td-label">Momen terfaktor (Mu)</td><td class="td-value">{{ forces.mu_ultimate_knm }}</td><td class="td-unit">kN·m</td><td>—</td></tr>
+      <tr><td class="td-label">Kapasitas tereduksi (φMn)</td><td class="td-value">{{ capacity.phi_mn_knm | round(2) }}</td><td class="td-unit">kN·m</td><td>—</td></tr>
+      <tr class="{{ 'highlight-green' if status == 'AMAN' else 'highlight-red' }}">
+        <td class="td-label"><strong>Rasio kapasitas (Mu/φMn)</strong></td>
+        <td class="td-value"><strong>{{ capacity.capacity_ratio | round(3) }}</strong></td>
+        <td class="td-unit">—</td>
+        <td><strong>{{ "≤ 1.0 → OK" if capacity.capacity_ratio <= 1.0 else "> 1.0 → NOT OK" }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 10: KESIMPULAN                                                    -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2>KESIMPULAN</h2>
+  </div>
+  <div class="status-banner {{ 'aman' if status == 'AMAN' else 'tidak' }}">
+    <div class="status-icon">{{ "✅" if status == "AMAN" else "❌" }}</div>
+    <div class="status-text">
+      <h3 class="{{ 'aman' if status == 'AMAN' else 'tidak' }}">ELEMEN {{ status }}</h3>
+      <p>Rasio kapasitas Mu/φMn = <strong>{{ capacity.capacity_ratio | round(3) }}</strong>
+        {% if status == "AMAN" %} ≤ 1.0 → Kapasitas penampang mencukupi.
+        {% else %} > 1.0 → Kapasitas penampang tidak mencukupi. Perlu redesign.{% endif %}</p>
+      {% if calc_type == "concrete_beam" %}
+      <p style="margin-top:4px">As terpasang: <strong>{{ capacity.num_bars }} batang Ø{{ geometry.bar_diameter_mm }} ({{ capacity.as_design_mm2|round(0)|int }} mm²)</strong></p>
+      {% else %}
+      <p style="margin-top:4px">Profil terpasang: <strong>{{ geometry.profile_designation }}</strong> &nbsp;·&nbsp; Kompak: <strong>{{ "Ya" if capacity.is_compact else "Tidak" }}</strong></p>
+      {% endif %}
+    </div>
+    <div class="ratio-badge {{ 'aman' if status == 'AMAN' else 'tidak' }}">
+      <span class="ratio-val">{{ capacity.capacity_ratio | round(2) }}</span>
+      <span class="ratio-lbl">Mu/φMn</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 11: CATATAN DAN DISCLAIMER ENGINEER REVIEW                       -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2>CATATAN DAN DISCLAIMER ENGINEER REVIEW</h2>
+  </div>
+  <div class="disclaimer-box">
+    <p>
+      <strong>⚠ PERHATIAN PENTING:</strong> Laporan ini dibuat secara otomatis oleh
+      <strong>AG Structural Analysis Suite (AG-SAS)</strong> dan bersifat <strong>indikatif semata</strong>.
+      Perhitungan ini menggunakan asumsi-asumsi berikut:
+    </p>
+    <ul style="margin: 6px 0 6px 16px; font-size:8.5pt; color:#9a3412;">
+      {% if calc_type == "concrete_beam" %}
+      <li>Balok sederhana (simply supported), beban merata seragam</li>
+      <li>Tulangan tunggal (singly reinforced), penampang segi empat</li>
+      <li>Geser, torsi, dan lendutan tidak dicek dalam perhitungan ini</li>
+      <li>φ = 0.90 berlaku (kondisi tension-controlled, dijamin via ρ_max = 0.75ρ_balanced)</li>
+      {% else %}
+      <li>Balok sederhana (simply supported), beban merata seragam</li>
+      <li>Tekuk lateral-torsi (LTB) diasumsikan tidak mengontrol (Lb ≤ Lp) — wajib diverifikasi</li>
+      <li>Hanya kelangsingan sayap yang dicek; badan diasumsikan kompak</li>
+      <li>Defleksi, geser, dan sambungan tidak dicek dalam perhitungan ini</li>
+      {% endif %}
+    </ul>
+    <p>
+      Laporan ini <strong>WAJIB diperiksa ulang dan diverifikasi</strong> oleh Engineer Struktur berwenang
+      (berlisensi Insinyur Profesional / Ahli K3 Konstruksi) sebelum digunakan dalam dokumen desain resmi,
+      gambar kerja, RKS, atau pengurusan IMB/PBG. Penyedia aplikasi <strong>tidak bertanggung jawab</strong>
+      atas penggunaan hasil tanpa verifikasi engineer yang berwenang.
+    </p>
+  </div>
+
+  <h3 style="margin-top:14px">Persetujuan Engineer Perencana</h3>
+  <table class="signature-table">
+    <thead>
+      <tr>
+        <th>Nama Engineer</th>
+        <th>No. Lisensi / SKA</th>
+        <th>Jabatan</th>
+        <th>Tanggal Periksa</th>
+        <th>Tanda Tangan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="signature-cell">______________________</td>
+        <td class="signature-cell">______________________</td>
+        <td class="signature-cell">______________________</td>
+        <td class="signature-cell">______________________</td>
+        <td class="signature-cell">______________________</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:12px;font-size:7.5pt;color:var(--mid);">
+    Dokumen ini digenerate oleh AG-SAS Formula Engine v{{ formula_version }} pada {{ generated_at }} oleh {{ generated_by }}.
+    Teks lengkap SNI adalah hak cipta BSN dan tidak disertakan dalam laporan ini.
+  </p>
+</div>
+
+</div><!-- end .content -->
+
+<!-- ── Footer ──────────────────────────────────────────────────────────────── -->
+<div class="page-footer">
+  <span>AG Structural Analysis Suite — Laporan Perhitungan Struktur</span>
+  <span>⚠ Bersifat indikatif — wajib diperiksa Engineer Struktur berwenang</span>
+  <span>{{ generated_at }}</span>
+</div>
+
+</body>
+</html>
