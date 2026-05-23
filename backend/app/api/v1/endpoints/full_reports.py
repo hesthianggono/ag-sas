@@ -15,7 +15,8 @@ from fastapi.responses import StreamingResponse
 from sqlmodel import Session
 import io
 
-from app.api.deps import get_current_user, get_session
+from app.core.deps import get_current_user
+from app.db.session import get_session
 from app.models.user import User
 from app.schemas.full_report import (
     FullReportCreateRequest, FullReportUpdateRequest, FullReportResponse,
